@@ -1,0 +1,108 @@
+{
+    "locations": [
+        {
+            "coordinates": {
+                "latitude": 37.7749,
+                "longitude": -122.4194
+            },
+            "requestTime": "2022-01-01T10:00:00",
+            "partySize": 4
+        },
+        {
+            "coordinates": {
+                "latitude": 37.7833,
+                "longitude": -122.4167
+            },
+            "requestTime": "2022-01-01T11:30:00",
+            "partySize": 2
+        },
+        {
+            "coordinates": {
+                "latitude": 37.7917,
+                "longitude": -122.4083
+            },
+            "requestTime": "2022-01-01T12:45:00",
+            "partySize": 1
+        },
+        {
+            "coordinates": {
+                "latitude": 37.7986,
+                "longitude": -122.4058
+            },
+            "requestTime": "2022-01-01T14:15:00",
+            "partySize": 3
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8056,
+                "longitude": -122.4019
+            },
+            "requestTime": "2022-01-01T15:30:00",
+            "partySize": 5
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8125,
+                "longitude": -122.3969
+            },
+            "requestTime": "2022-01-01T16:45:00",
+            "partySize": 2
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8194,
+                "longitude": -122.3908
+            },
+            "requestTime": "2022-01-01T18:00:00",
+            "partySize": 7
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8261,
+                "longitude": -122.3836
+            },
+            "requestTime": "2022-01-01T19:15:00",
+            "partySize": 4
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8328,
+                "longitude": -122.3753
+            },
+            "requestTime": "2022-01-01T20:30:00",
+            "partySize": 3
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8394,
+                "longitude": -122.3658
+            },
+            "requestTime": "2022-01-01T21:45:00",
+            "partySize": 6
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8458,
+                "longitude": -122.3553
+            },
+            "requestTime": "2022-01-01T23:00:00",
+            "partySize": 2
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8522,
+                "longitude": -122.3436
+            },
+            "requestTime": "2022-01-02T00:15:00",
+            "partySize": 5
+        },
+        {
+            "coordinates": {
+                "latitude": 37.8583,
+                "longitude": -122.3308
+            },
+            "requestTime": "2022-01-02T01:30:00",
+            "partySize": 4
+        }
+    ]
+}
