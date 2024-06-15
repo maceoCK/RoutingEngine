@@ -3,6 +3,7 @@ from typing import List, Dict, Tuple
 import json
 import math
 
+#ADD IN MAX CAPACITY CONSIDERATION. NEED VEHICLE MAKE MODEL AND COLOR
 
 def get_route(
     driver_coords: Tuple[float, float],
@@ -96,7 +97,7 @@ def parse_time(request_time: str) -> datetime:
 
 
 try:
-    with open("exampleLocations.json", "r") as file:
+    with open("RoutingEngine/exampleLocations.json", "r") as file:
         data = json.load(file)
 except FileNotFoundError:
     print("The file exampleLocations.json was not found.")
