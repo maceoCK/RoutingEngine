@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="DDNow">
+        <meta name="version" content="0.0.1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DDnow</title>
+    </head>
+    <body>
+        <h1>Enter Adress</h1>
+        <form id="addressForm">
+            <label for="address">Enter Address:</label>
+            <input
+                type="text"
+                name="address"
+                id="address"
+                required
+            >
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>
+<script>
+    document.getElementById('addressForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const address = document.getElementById('address').value;
+        
+        const response = await fetch('http://localhost:5000/add_address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ address: address }),
+        });
+
+        const result = await response.json();
+        document.getElementById('response').innerText = JSON.stringify(result, null, 2);
+    });
+</script>
