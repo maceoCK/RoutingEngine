@@ -17,11 +17,13 @@ def get_route(
         loc for loc in locations if loc["partySize"] <= remaining_capacity
     ]
 
+    time_weight = time_weight/1000
+
     coordinates = (
-        [driver_coords]
-        + [loc["coordinates"] for loc in filtered_locations]
-        + [destination_coords]
-    )
+    [tuple(map(float, driver_coords))]
+    + [tuple(map(float, (loc["coordinates"]["latitude"], loc["coordinates"]["longitude"]))) for loc in filtered_locations]
+    + [tuple(map(float, destination_coords))]
+)
 
     distance_matrix = get_distance_matrix(coordinates)
 
@@ -36,20 +38,24 @@ def get_route(
         scores.append((score, loc))
 
     sorted_locations = [loc for _, loc in sorted(scores, key=lambda x: x[0])]
-
     route = []
     current_capacity = remaining_capacity
 
     for loc in sorted_locations:
         party_size = loc["partySize"]
+
         if party_size <= current_capacity:
-            route.append(loc["coordinates"])
+            route.append((loc["coordinates"]["latitude"], loc["coordinates"]["longitude"]))
             current_capacity -= party_size
+            if current_capacity == 0:
+                break
+        
 
     # Append the destination coordinates to the route
     route.append(destination_coords)
 
     return route
+
 
 
 def get_distance_matrix(locations: List[Tuple[float, float]]) -> List[List[float]]:
@@ -94,10 +100,14 @@ def haversine(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> float
 def parse_time(request_time: str) -> datetime:
     return datetime.fromisoformat(request_time)
 
-
+def get_distance_of_route(route: List[Tuple[float, float]]) -> float:
+    distance = 0
+    for i in range(len(route) - 1):
+        distance += haversine(route[i], route[i + 1])
+    return distance
 
 try:
-    with open("RoutingEngine/exampleLocations.json", "r") as file:
+    with open("fakeLocationData.json", "r") as file:
         data = json.load(file)
 except FileNotFoundError:
     print("The file exampleLocations.json was not found.")
@@ -107,15 +117,9 @@ except json.JSONDecodeError:
     data = None
 
 if data:
-    # Extract coordinates in the correct format for the haversine function
-    coords = [
-        (loc["coordinates"]["latitude"], loc["coordinates"]["longitude"])
-        for loc in data["locations"]
-    ]
-
-    distance_matrix = get_distance_matrix(coords)
-
-    for row in distance_matrix:
-        print(row)
+    route = get_route((37.23986208713311, -80.43990611801217), 8, (37.2365485717204, -80.42482151966904), data["locations"], 10, 5)
+    for loc in route:
+        print(loc)
+    print(f"Total distance: {get_distance_of_route(route)}")
 else:
     print("Failed to load location data.")
