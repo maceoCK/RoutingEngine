@@ -6,35 +6,79 @@
         <meta name="version" content="0.0.1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>DDnow</title>
+        <style>
+        #response {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        </style>
     </head>
     <body>
-        <h1>Enter Adress</h1>
+        <h1>Enter Address</h1>
         <form id="addressForm">
-            <label for="address">Enter Address:</label>
-            <input
-                type="text"
-                name="address"
-                id="address"
-                required
-            >
-            <button type="submit">Submit</button>
+            <p>
+                <label for="address">Address:&nbsp;&nbsp;&nbsp;</label>
+                <input
+                    type="text"
+                    name="address"
+                    id="address"
+                    required
+                >
+            </p>
+            <p>
+                <label for="partySize">Party Size:</label>
+                <input
+                    type="number"
+                    name="partySize"
+                    id="partySize"
+                    required
+                >
+            </p>
+            <button type="button" id="verifyButton">Verify</button>
+            <button type="submit" id="submitButton" disabled>Submit</button>
         </form>
+        <p id="response"></p>
     </body>
-</html>
-<script>
-    document.getElementById('addressForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const address = document.getElementById('address').value;
-        
-        const response = await fetch('http://localhost:5000/add_address', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ address: address }),
-        });
-
-        const result = await response.json();
-        document.getElementById('response').innerText = JSON.stringify(result, null, 2);
+    <script>
+document.getElementById('verifyButton').addEventListener('click', async function(event) {
+    event.preventDefault();
+    const address = document.getElementById('address').value;
+    const partySize = document.getElementById('partySize').value;
+    
+    const response = await fetch('http://localhost:5000/verify_address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address: address, partySize: partySize }),
     });
-</script>
+
+    const result = await response.json();
+    document.getElementById('response').innerText = JSON.stringify(result.message, null, 2);
+
+    if (response.ok) {
+        // Enable the submit button if verification is successful
+        document.getElementById('submitButton').disabled = false;
+    }
+});
+
+document.getElementById('addressForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const address = document.getElementById('address').value;
+    const partySize = document.getElementById('partySize').value;
+    
+    // No need to verify again, just submit the data
+    const response = await fetch('http://localhost:5000/add_address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address: address, partySize: partySize }),
+    });
+
+    const result = await response.json();
+    document.getElementById('response').innerText = JSON.stringify(result.message, null, 2);
+});
+    </script>
+</html>

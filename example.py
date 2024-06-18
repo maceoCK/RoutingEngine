@@ -13,7 +13,7 @@ client = MongoClient(connection_string)
 db = client["locationData"]
 
 # Access a specific collection
-collection = db["userLocs"]
+collection = db["userTest"]
 
 def get_route(
     driver_coords: Tuple[float, float],
