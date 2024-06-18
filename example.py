@@ -1,9 +1,19 @@
 from datetime import datetime
 from typing import List, Dict, Tuple
-import json
 import math
+from pymongo import MongoClient
 
-# TODO: add in interaction with database and recalculation of route after each pickup
+# Replace the following with your actual connection string
+connection_string = "mongodb+srv://DDnow:DDnow@locationdata.rshogoh.mongodb.net/?retryWrites=true&w=majority&appName=locationData"
+
+# Create a MongoClient
+client = MongoClient(connection_string)
+
+# Access a specific database
+db = client["locationData"]
+
+# Access a specific collection
+collection = db["userLocs"]
 
 def get_route(
     driver_coords: Tuple[float, float],
@@ -19,14 +29,22 @@ def get_route(
     ]
 
     # Adjust time weight for calculation
-    time_weight = time_weight/1000
+    time_weight = time_weight / 1000
 
     # Compile coordinates from driver, locations, and destination
     coordinates = (
-    [tuple(map(float, driver_coords))]
-    + [tuple(map(float, (loc["coordinates"]["latitude"], loc["coordinates"]["longitude"]))) for loc in filtered_locations]
-    + [tuple(map(float, destination_coords))]
-)
+        [tuple(map(float, driver_coords))]
+        + [
+            tuple(
+                map(
+                    float,
+                    (loc["coordinates"]["latitude"], loc["coordinates"]["longitude"]),
+                )
+            )
+            for loc in filtered_locations
+        ]
+        + [tuple(map(float, destination_coords))]
+    )
 
     # Generate a distance matrix for the route
     distance_matrix = get_distance_matrix(coordinates)
@@ -52,16 +70,18 @@ def get_route(
         party_size = loc["partySize"]
 
         if party_size <= current_capacity:
-            route.append((loc["coordinates"]["latitude"], loc["coordinates"]["longitude"]))
+            route.append(
+                (loc["coordinates"]["latitude"], loc["coordinates"]["longitude"])
+            )
             current_capacity -= party_size
             if current_capacity == 0:
                 break
-        
 
     # Append the final destination coordinates to the route
     route.append(destination_coords)
 
     return route
+
 
 def get_distance_matrix(locations: List[Tuple[float, float]]) -> List[List[float]]:
     # Initialize the distance matrix
@@ -74,6 +94,7 @@ def get_distance_matrix(locations: List[Tuple[float, float]]) -> List[List[float
             matrix[i][j] = haversine(locations[i], locations[j])
 
     return matrix
+
 
 def haversine(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> float:
     """
@@ -102,9 +123,11 @@ def haversine(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> float
 
     return distance
 
+
 def parse_time(request_time: str) -> datetime:
     # Parse ISO formatted time string to datetime object
     return datetime.fromisoformat(request_time)
+
 
 def get_distance_of_route(route: List[Tuple[float, float]]) -> float:
     # Calculate the total distance of the route
@@ -113,25 +136,27 @@ def get_distance_of_route(route: List[Tuple[float, float]]) -> float:
         distance += haversine(route[i], route[i + 1])
     return distance
 
+
 try:
-    # Attempt to load location data from JSON file
-    with open("fakeLocationData.json", "r") as file:
-        data = json.load(file)
-except FileNotFoundError:
-    # Handle file not found error
-    print("The file exampleLocations.json was not found.")
-    data = None
-except json.JSONDecodeError:
-    # Handle JSON decode error
-    print("The file exampleLocations.json is not a valid JSON.")
+    data = list(collection.find({}))
+except Exception as e:
+    # Handle errors in fetching data
+    print(f"Error fetching data: {e}")
     data = None
 
 if data:
-    # Calculate route if data is loaded successfully
-    route = get_route((37.23986208713311, -80.43990611801217), 8, (37.2365485717204, -80.42482151966904), data["locations"], 10, 5)
+    # Calculate route if data is fetched successfully
+    route = get_route(
+        (37.23986208713311, -80.43990611801217),
+        8,
+        (37.2365485717204, -80.42482151966904),
+        data,
+        10,
+        5,
+    )
     for loc in route:
         print(loc)
     print(f"Total distance: {get_distance_of_route(route)}")
 else:
-    # Print failure message if data loading fails
-    print("Failed to load location data.")
+    # Print failure message if data fetching fails
+    print("Failed to fetch location data.")
